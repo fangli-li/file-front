@@ -7,14 +7,13 @@
 						<span style="font-family:微软雅黑;">档案文献管理</span>
 					</div>
 					<div style="width: 600px;float: left;">
-						<el-form class="search_form" ref="form" :model="searchForm">
+						<el-form class="search_form" ref="form" :model="searchForm" @submit.native.prevent>
 							<el-input
 									placeholder="请输入搜索内容"
 									v-model="searchForm.keyword"
-									style="width:350px;"
-							>
+									style="width:350px;">
 								<template #append>
-									<el-button type="primary" @click="search" style="background-color: #4F6EF2;">搜索</el-button>
+									<el-button type="primary" native-type="submit" @click="search" style="background-color: #4F6EF2;">搜索</el-button>
 								</template>
 							</el-input>
 
