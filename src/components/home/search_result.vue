@@ -1,0 +1,453 @@
+<template>
+	<el-container>
+		<el-main id="main">
+			<el-container style="height:100%;text-align: left;width:1200px;margin:0 auto;">
+				<el-aside style="width:200px;">
+					<div style="min-height: 23px;"></div>
+					<el-tree
+						:data="treeData"
+						default-expand-all
+						:props="defaultProps"></el-tree>
+				</el-aside>
+				<el-main id="search_result_layout" v-loading="loading">
+					<div v-if="pageObj.total == 0">
+						没有查询到结果数据
+					</div>
+					<div v-else>
+						<div id="result_list">
+							<div id="toolbar">
+								<span id="result_total" class="result_total">共找到{{pageObj.total}}条相关记录</span>
+								<div class="sort_container">
+									<el-dropdown @command="sortChange">
+										<span class="el-dropdown-link" style="cursor: pointer">
+										    {{sort.label}}<i class="el-icon-arrow-down el-icon--right"></i>
+										</span>
+										<el-dropdown-menu slot="dropdown">
+											<el-dropdown-item command="0">按相关性</el-dropdown-item>
+											<el-dropdown-item command="1">按时间倒序</el-dropdown-item>
+										</el-dropdown-menu>
+									</el-dropdown>
+								</div>
+							</div>
+							<div id="content_list">
+								<div v-for="item in this.data.dataList" v-bind:id="item.id">
+									<div id="item.id" class="result sc_default_result xpath-log">
+										<div class="sc_content">
+											<h3 class="t c_font">
+												<a href="#" target="_blank" style="text-decoration:solid;"><span v-html="item.filename"></span></a>
+												<div class="c_abstract"><span v-html="item.content"></span></div>
+												<div class="sc_info">
+													<span v-html="item.author"></span>&nbsp;&nbsp;-&nbsp;&nbsp;
+													<!--《<span v-html="item.filename"></span>》<br>-->
+													<span v-html="item.topic"></span>&nbsp;&nbsp;-&nbsp;&nbsp;
+													<span v-html="item.level"></span>&nbsp;&nbsp;-&nbsp;&nbsp;
+													<span v-html="item.date"></span>
+												</div>
+											</h3>
+											<div class="sc_ext">
+												<div class="sc_other" style="cursor: pointer">
+													<a class="el-icon-download" @click="downloadFile(item.id, item.filename)">下载</a>
+												</div>
+											</div>
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+						</div>
+						<div id="pagination">
+							<el-pagination
+									@current-change="currentChange"
+									background
+									layout="prev, pager, next"
+									:page-size="pageObj.pageSize"
+									:total="pageObj.total"></el-pagination>
+						</div>
+					</div>
+				</el-main>
+			</el-container>
+		</el-main>
+	</el-container>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				keyword: this.$route.query.keyword,
+				pageObj: {
+					total: 0,
+					pages: 1,
+					pageSize: 10
+				},
+				sort: {
+				    label: '按相关性',
+					value: 'correlation'
+				},
+				sortList: [{
+                    label: '按相关性',
+                    value: 'correlation'
+				}, {
+                    label: '按时间倒序',
+                    value: 'time'
+				}],
+				treeData: [{
+						label: '年份',
+						children: [{
+								label: '2021年（20）'
+							},
+							{
+								label: '2020年（30）'
+							},
+							{
+								label: '2019年（40）'
+							},
+						]
+					},
+					{
+						label: '主题',
+						children: [{
+								label: '主题1（10）'
+							},
+							{
+								label: '主题2（32）'
+							},
+							{
+								label: '主题3（67）'
+							}
+						]
+					},
+					{
+						label: '发文机关',
+						children: [{
+								label: '发文机关1（12）'
+							},
+							{
+								label: '发文机关2（12）'
+							},
+							{
+								label: '发文机关3（12）'
+							},
+						]
+					},
+					{
+						label: '密级',
+						children: [{
+								label: '密级A（12）'
+							},
+							{
+								label: '密级AA（12）'
+							},
+							{
+								label: '密级AAA（12）'
+							}
+						]
+					}
+				],
+				defaultProps: {
+					children: 'children',
+					label: 'label'
+				},
+				data: {
+					dataList: []
+				},
+				loading: true
+			}
+		},
+		created() {
+			this.searchData(1);
+		},
+		methods: {
+			searchData(arg) {
+			    this.loading = true
+				if(arg === 1){
+                    this.pageObj.pages = 1
+				}
+				this.$axios.get('/api/search', {
+					params: {
+						keyword: this.keyword,
+						from: (this.pageObj.pages - 1) * this.pageObj.pageSize,
+						pageSize: this.pageObj.pageSize,
+						sort: this.sort.value
+					}
+				}).then(response => {
+				    console.log(response)
+					let res = response.data; //获取请求到的数据中的data，即json的内容
+					var total = res.total; //获取json中的data数组
+					this.pageObj.total = res.total;
+					this.data.dataList = res.data;
+					this.loading = false
+				});
+			},
+            currentChange(val){
+			    this.pageObj.pages = val
+				this.searchData()
+			},
+			sortChange(num){
+			    console.log('xx')
+			    if(this.sort !== this.sortList[num]) {
+					this.sort = this.sortList[num]
+					this.searchData(1)
+                }
+			},
+            downloadFile(id, fileName){
+			    this.loading = true
+				fileName = fileName.replace(new RegExp('<em>', "gm"), '').replace(new RegExp('</em>', "gm"), '')
+				this.$axios({
+					method: 'get',
+					url: '/api/download/' + id,
+					responseType: 'blob'
+				}).then(res => {
+				    console.log(res)
+                    let url = window.URL.createObjectURL(new Blob([res.data]))
+                    let link = document.createElement('a')
+                    link.style.display = 'none'
+                    link.href = url
+                    link.setAttribute('download', fileName)
+                    document.body.appendChild(link)
+                    link.click()
+                    document.body.removeChild(link); //下载完成移除元素
+                    window.URL.revokeObjectURL(url); //释放掉blob对象
+                    this.loading = false
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+	.el-container {
+			height: 100%;
+		}
+		.el-header {
+		  background-color: #002147;
+		  color: white;
+		}
+		.el-footer {
+		  background-color: #FFFFFF;
+		  color: black;
+		  text-align: center;
+		}
+		.el-aside {
+		  background-color: #FFFFFF;
+		  width: 400px;
+		}
+		.el-main {
+		  background-color: FFFFFF;
+		}
+		#toolbar .sort_container {
+		    width: 90px;
+		    float: right;
+		}
+		.s_form_wr {
+		    position: relative;
+		    z-index: 297;
+		    width: 643px;
+		    margin-left: 192px;
+		    _float: left;
+		    *margin-left: 192px;
+		    _margin-left: 80px;
+		    text-align: left;
+		}
+		#head_wr.gj #head.gj .s_form_wr {
+		    margin-left: 120px;
+		}
+		#toolbar .sortwr {
+		    float: right;
+		    position: relative;
+		    display: inline-block;
+		    *zoom: 1;
+		    color: #666;
+		}
+		.sort_select_default {
+		    float: right;
+		    display: inline-block;
+		    font-size: 12px;
+		    width: 67px;
+		    cursor: pointer;
+		}
+		.iconfont {
+		    font-family: iconfont!important;
+		    font-size: 16px;
+		    font-style: normal;
+		    -webkit-font-smoothing: antialiased;
+		    -moz-osx-font-smoothing: grayscale;
+		}
+		#top_hint .sort_list, #toolbar .sort_list {
+		    font-size: 12px;
+		}
+		.sort_list {
+		    display: none;
+		    border: 1px solid #dfdede;
+		    position: absolute;
+		    background: #fff;
+		    left: 0;
+		    top: 22px;
+		    z-index: 20;
+		    width: 94px;
+		    padding: 5px 0;
+		}
+		em {
+			font-style: normal;
+			color: #d00000;
+		}
+		.gj {
+		    height: 57px;
+		    border-bottom: 0;
+			background-color: #002147;
+			    padding: 10px 0;
+			    padding-left: calc(100vw - 100%);
+			    position: fixed;
+			    left: 0;
+			    top: 0;
+			    right: 0;
+			    border-bottom: 0;
+			    height: 36px;
+		}
+		.s_form_wr {
+		    position: relative;
+		}
+		.s_ipt_wr {
+		    position: relative;
+		    overflow: hidden;
+		    background: #fff;
+		    width: 540px;
+		    height: 34px;
+		    display: inline-block;
+		    margin-right: 0;
+		    border: 1px solid #fff;
+		    border-right-width: 0;
+		    vertical-align: top;
+		}
+		.s_ipt_wr .gj {
+		    width: 405px;
+		    background: #fff;
+		    height: 38px;
+		    display: inline-block;
+		    margin-right: 0;
+		    vertical-align: top;
+		    border: 0;
+		    border-radius: 6px;
+		}
+		.s_form_wr .s_ipt_wr {
+		    width: 481px;
+		    border: 1px solid #ddd;
+		    border-right-width: 1px;
+		}
+		.sc_adv_search_btn input {
+		    -webkit-user-select: none;
+		    -moz-user-select: none;
+		    -ms-user-select: none;
+		    user-select: none;
+		    width: 100px;
+		    height: 38px;
+		    cursor: pointer;
+		    color: #999;
+		    background: #4F6EF2;
+		    text-align: center;
+		    font-family: PingFangSC-Medium;
+		    font-size: 14px;
+		    color: #FFF;
+		    letter-spacing: 0;
+		    line-height: 38px;
+		    border-radius: 0 6px 6px 0;
+		    display: block;
+		    outline: 0;
+		}
+		#toolbar {
+			width: 570px;
+			    box-sizing: content-box;
+			    color: #666;
+			    font-size: 13px;
+			    margin-bottom: 5px;
+			    line-height: 23px;
+			    min-height: 23px;
+		}
+		#pagination {
+			margin-top: 25px;
+		}
+		.t {
+		    font-size: 18px;
+		    font-weight: 400;
+		    margin-bottom: 6px;
+		}
+		p, form, ol, ul, li, h3, h4, th, td {
+		    margin: 0;
+		    margin-top: 0px;
+		    margin-right: 0px;
+		    margin-bottom: 0px;
+		    margin-left: 0px;
+		    padding: 0;
+		    padding-top: 0px;
+		    padding-right: 0px;
+		    padding-bottom: 0px;
+		    padding-left: 0px;
+		    list-style: none;
+		    list-style-position: initial;
+		    list-style-image: initial;
+		    list-style-type: none;
+		}
+		h3 {
+		    display: block;
+		    font-size: 1.17em;
+		    margin-block-start: 1em;
+		    margin-block-end: 1em;
+		    margin-inline-start: 0px;
+		    margin-inline-end: 0px;
+		    font-weight: bold;
+		}
+		.result {
+		    margin-bottom: 12px;
+		    overflow: hidden;
+			/*width: 570px;*/
+			border-bottom: 1px solid #efefef;
+		}
+	
+		.sc_default_result .sc_content {
+		    margin-top: 5px;
+		}
+		.t {
+		    font-size: 18px; 
+		    font-weight: 400;
+		    margin-bottom: 6px;
+		}
+		.c_font {
+		    font-family: "Helvetica Neue",Helvetica,Arial,"Microsoft YaHei","微软雅黑";
+		}
+		.c_abstract {
+		    line-height: 24px;
+		}
+		.c_abstract, .c_abstract a {
+		    color: #666;
+		}
+		.sc_default_result .sc_info {
+		    color: #333;
+		    margin-top: 4px;
+		}
+		.sc_default_result .sc_ext {
+		    height: 24px;
+		    line-height: 24px;
+		    margin: 11px 10px 20px 0;
+		}
+		.sc_default_result .sc_other {
+		    float: left;
+		    white-space: nowrap;
+		    /*word-wrap: normal; */
+		    text-align: right;
+		}
+		.sc_default_result .sc_other a {
+		    display: inline-block;
+		    height: 26px;
+		    margin-right: 15px;
+		    padding: 0 15px;
+		    line-height: 27px;
+		    background: #f1f1f1;
+		    font-size: 12px;
+		    color: #333;
+		    -webkit-border-radius: 13px;
+		    -moz-border-radius: 13px;
+		    -ms-border-radius: 13px;
+		    border-radius: 13px;
+		}
+</style>

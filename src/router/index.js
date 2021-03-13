@@ -1,0 +1,38 @@
+import Vue from 'vue'
+import Router from 'vue-router'
+import Portal from '@/components/portal'
+import Home from '@/components/home/home'
+import SearchResult from '@/components/home/search_result'
+import MyPage from '@/components/home/mypage'
+import DocManage from '@/components/home/doc_manage'
+
+Vue.use(Router)
+
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+	return originalPush.call(this, location).catch(err => err)
+}
+
+export default new Router({
+	mode: 'history',
+	routes: [{
+			path: '/home',
+			name: 'Home',
+			component: Home
+		},
+		{
+			path: '/searchresult',
+			name: 'SearchResult',
+			component: SearchResult
+		},
+		{
+			path: '/mypage',
+			name: 'MyPage',
+			component: MyPage
+		},
+		{
+			path: '/docmanage',
+			name: 'DocManage',
+			component: DocManage
+		}]
+})
