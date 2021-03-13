@@ -34,9 +34,10 @@
 									<div id="item.id" class="result sc_default_result xpath-log">
 										<div class="sc_content">
 											<h3 class="t c_font">
-												<el-button type="text" @click="download(item.id)"><span style="font-size: 18px" v-html="item.filename"></span></el-button>
+												<el-button type="text" @click="download(item.id)"><span style="font-size: 18px" v-html="item.title"></span></el-button>
 												<div class="c_abstract"><span v-html="item.content"></span></div>
 												<div class="sc_info">
+                                                    <span v-html="item.filename"></span><br>
 													<span v-html="item.author"></span>&nbsp;&nbsp;-&nbsp;&nbsp;
 													<!--《<span v-html="item.filename"></span>》<br>-->
 													<span v-html="item.topic"></span>&nbsp;&nbsp;-&nbsp;&nbsp;

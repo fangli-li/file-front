@@ -1,8 +1,8 @@
 <template>
-	<div style="width: 1200px;height: auto;margin: 0 auto;">
+	<div style="width: 1200px;height: auto;margin: 0 auto;max-width: 90%">
 		<el-form class="searchForm" :inline="true" :model="searchParams" size="small" style="margin-top: 24px">
 			<el-row>
-				<el-col :span="6">
+				<el-col :xl="6" :ls="6" :md="6" :sm="12" :xs="24">
 					<el-form-item label="主题">
 						<el-select v-model="searchParams.topic" placeholder="主题" clearable>
 							<el-option
@@ -14,13 +14,13 @@
 						</el-select>
 					</el-form-item>
 				</el-col>
-				<el-col :span="6">
+				<el-col :xl="6" :ls="6" :md="6" :sm="12" :xs="24">
 					<el-form-item label="作者">
 						<el-input v-model="searchParams.author" placeholder="作者" clearable></el-input>
 					</el-form-item>
 				</el-col>
 				<template v-if="toggleSearchStatus">
-					<el-col :span="6">
+					<el-col :xl="6" :ls="6" :md="6" :sm="12" :xs="24">
 						<el-form-item label="密级">
 							<el-select v-model="searchParams.level" placeholder="密级" clearable>
 								<el-option
@@ -38,7 +38,7 @@
 						<!--</el-form-item>-->
 					<!--</el-col>-->
 				</template>
-				<el-col :span="6">
+				<el-col :xl="6" :ls="6" :md="6" :sm="12" :xs="24">
 					<el-form-item>
 						<el-button type="primary" @click="searchData">查询</el-button>
 						<el-button type="primary" @click="resetData">重置</el-button>
@@ -68,9 +68,11 @@
 						<span>{{(pageObj.pages - 1) * pageObj.pageSize + scope.$index + 1}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="filename" label="文件名称"></el-table-column>
+				<el-table-column prop="title" label="标题"></el-table-column>
+				<!--<el-table-column prop="filename" label="文件名称"></el-table-column>-->
 				<el-table-column prop="topic" label="主题" width="80"></el-table-column>
 				<el-table-column prop="author" label="作者" width="100"></el-table-column>
+				<el-table-column prop="department" label="发文机关" width="100"></el-table-column>
 				<el-table-column prop="level" label="密级" width="80"></el-table-column>
 				<el-table-column prop="date" label="发文日期" width="100"></el-table-column>
 				<el-table-column prop="oper" label="操作" width="180">
@@ -101,7 +103,7 @@
 			<div style="width: 500px;margin: 0 auto" v-loading="fileUploadLoading">
 				<el-form ref="docForm" :model="docForm" label-width="80px" size="small" :rules="docFormRules">
 					<el-form-item label="标题" prop="title">
-						<el-input v-model="docForm.title"></el-input>
+						<el-input v-model="docForm.title" placeholder="标题"></el-input>
 					</el-form-item>
 					<el-form-item label="主题" prop="topic">
 						<el-select v-model="docForm.topic" placeholder="主题">
@@ -114,7 +116,7 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item label="发文机关" prop="department">
-						<el-select v-model="docForm.department" placeholder="密级">
+						<el-select v-model="docForm.department" placeholder="发文机关">
 							<el-option
 									v-for="item in unitList"
 									:key="item"
@@ -335,6 +337,9 @@
 <style lang="less">
 	.searchForm{
 		.el-form-item{
+			width: 100%;
+		}
+		.el-select{
 			width: 100%;
 		}
 		.el-form-item__content{
