@@ -3,8 +3,11 @@
 		<el-header id="home_header" height="60px">
 			<div id="header" align="center" style="line-height:60px;padding: 0 0;">
 				<div style="width:1000px;margin:0 auto;">
-					<div style="width: 100px;float: left;cursor: pointer" @click="goHome">
-						<span style="font-family:微软雅黑;">档案文献管理</span>
+					<!--<div style="width: 100px;float: left;cursor: pointer" @click="goHome">-->
+						<!--<span style="font-family:微软雅黑;">档案文献管理</span>-->
+					<!--</div>-->
+					<div style="width: 80px;float: left">
+						<img src="../../assets/logo.png" style="height: 60px">
 					</div>
 					<div style="width: 600px;float: left;">
 						<el-form class="search_form" ref="form" :model="searchForm" @submit.native.prevent>
