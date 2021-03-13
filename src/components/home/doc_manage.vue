@@ -2,14 +2,16 @@
 	<div style="width: 1200px;height: auto;margin: 0 auto;">
 		<el-form class="searchForm" :inline="true" :model="searchParams" size="small" style="margin-top: 24px">
 			<el-row>
-				<!--<el-col :span="6">-->
-					<!--<el-form-item label="模糊查询">-->
-						<!--<el-input v-model="searchParams.keyword" placeholder="模糊查询"></el-input>-->
-					<!--</el-form-item>-->
-				<!--</el-col>-->
 				<el-col :span="6">
 					<el-form-item label="主题">
-						<el-input v-model="searchParams.topic" placeholder="主题"></el-input>
+						<el-select v-model="searchParams.topic" placeholder="主题">
+							<el-option
+									v-for="item in topicList"
+									:key="item"
+									:label="item"
+									:value="item">
+							</el-option>
+						</el-select>
 					</el-form-item>
 				</el-col>
 				<el-col :span="6">
@@ -95,15 +97,41 @@
 		</div>
 
 		<el-dialog width="40%" title="新建" :visible.sync="dialogVisible" :before-close="addDiolagClose">
-			<div style="width: 500px;margin: 0 auto">
-				<el-form ref="form" :model="docForm" label-width="80px" size="small">
-					<el-form-item label="标题">
-						<el-input v-model="docForm.topic"></el-input>
+			<div style="width: 500px;margin: 0 auto" v-loading="fileUploadLoading">
+				<el-form ref="docForm" :model="docForm" label-width="80px" size="small" :rules="docFormRules">
+					<el-form-item label="标题" prop="title">
+						<el-input v-model="docForm.title"></el-input>
 					</el-form-item>
-					<!--<el-form-item label="作者">-->
-						<!--<el-input v-model="docForm.author"></el-input>-->
-					<!--</el-form-item>-->
-					<el-form-item label="密级">
+					<el-form-item label="主题" prop="topic">
+						<el-select v-model="docForm.topic" placeholder="主题">
+							<el-option
+									v-for="item in topicList"
+									:key="item"
+									:label="item"
+									:value="item">
+							</el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="发文机关" prop="department">
+						<el-select v-model="docForm.department" placeholder="密级">
+							<el-option
+									v-for="item in unitList"
+									:key="item"
+									:label="item"
+									:value="item">
+							</el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="发文日期" prop="date">
+						<el-date-picker
+								v-model="docForm.date"
+								type="date"
+								format="yyyy-MM-dd"
+								value-format="timestamp"
+								placeholder="选择日期">
+						</el-date-picker>
+					</el-form-item>
+					<el-form-item label="密级" prop="level">
 						<el-select v-model="docForm.level" placeholder="密级">
 							<el-option
 									v-for="item in levelList"
@@ -113,9 +141,6 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<!--<el-form-item label="发文日期">-->
-						<!--<el-input v-model="docForm.topic"></el-input>-->
-					<!--</el-form-item>-->
 					<el-form-item label="附件">
 						<el-upload
 								class="upload-demo"
@@ -146,7 +171,13 @@
 			return {
 				searchWord: '',
 				dialogVisible: false,
-				docForm: {},
+				docForm: {
+				    title: '',
+					topic: '',
+					level: '',
+                    department: '',
+					date: ''
+				},
 				tableData: [],
                 pageObj: {
                     total: 0,
@@ -158,7 +189,17 @@
 				searchParams: {},
                 toggleSearchStatus: false,
                 loading: false,
-                levelList: ['一级']
+                levelList: ['公开', '秘密', '机密', '绝密'],
+				topicList: ['政治','经济','文化','军事'],
+				unitList: ['一局', '二局', '三局'],
+                fileUploadLoading: false,
+                docFormRules: {
+				    title: [{required: true, message: '请输入标题', trigger: 'blur'}],
+                    topic: [{required: true, message: '请选择主题', trigger: 'blur'}],
+                    level: [{required: true, message: '请选择密级', trigger: 'blur'}],
+                    department: [{required: true, message: '请选择发文机关', trigger: 'blur'}],
+                    date: [{required: true, message: '请选择日期', trigger: 'blur'}]
+				}
 			}
 		},
 		mounted(){
@@ -191,7 +232,13 @@
             },
             addDiolagClose(){
 				this.dialogVisible = false
-				this.docForm = {}
+				this.docForm = {
+                    title: '',
+                    topic: '',
+                    level: '',
+                    department: '',
+                    date: ''
+                }
 				this.fileList = []
 				this.file = {}
 			},
@@ -201,33 +248,49 @@
 			},
             submitForm(){
                 let that = this, missionList = []
-				if(this.fileList.length === 0){
-                    this.$message.error('请上传文件')
-					return;
-				}
-				for(let i in this.fileList){
-                    let formData = new FormData()
-                    formData.append('file',this.fileList[i].raw);
-                    formData.append('topic', this.docForm.topic);
-                    formData.append('level', this.docForm.level);
-                    let p = new Promise((resolve, reject) => {
-                        this.$axios.post('/api/uploadFile', formData).then(res => {
-                            if(res.status === 200){
-								resolve(res)
-                            } else {
-                                reject(res)
+				this.$refs.docForm.validate((val) => {
+				    if (val) {
+                        if(this.fileList.length === 0){
+                            this.$message.error('请上传文件')
+                            return;
+                        }
+                        this.fileUploadLoading = true
+                        for(let i in this.fileList){
+                            let formData = new FormData()
+                            formData.append('file',this.fileList[i].raw);
+                            for(let key in this.docForm){
+                                formData.append(key, this.docForm[key])
 							}
-                        })
-					})
-					missionList.push(p)
-				}
-				Promise.all(missionList).then(res => {
-				    that.$message.success('上传成功')
-					that.addDiolagClose()
-                    that.searchData(1)
-				}).catch(res => {
-                    that.$message.error('上传失败')
-                    that.addDiolagClose()
+                            // formData.append('topic', this.docForm.topic);
+                            // formData.append('level', this.docForm.level);
+                            // formData.append('title', this.docForm.title)
+                            // formData.append('department', this.docForm.department)
+                            // formData.append('date', this.docForm.date)
+                            let p = new Promise((resolve, reject) => {
+                                this.$axios.post('/api/uploadFile', formData).then(res => {
+                                    if(res.status === 200){
+                                        resolve(res)
+                                    } else {
+                                        reject(res)
+                                    }
+                                })
+                            })
+                            missionList.push(p)
+                        }
+                        Promise.all(missionList).then(res => {
+                            that.$message.success('上传成功')
+							setTimeout(() => {
+                                that.addDiolagClose()
+                                that.searchData(1)
+                                that.fileUploadLoading = false
+							}, 1000)
+                        }).catch(res => {
+                            that.$message.error('上传失败')
+                            that.addDiolagClose()
+                        }).finally(() => {
+
+						})
+					}
 				})
 			},
             addPredictFile(file){

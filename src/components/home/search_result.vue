@@ -34,7 +34,7 @@
 									<div id="item.id" class="result sc_default_result xpath-log">
 										<div class="sc_content">
 											<h3 class="t c_font">
-												<a href="#" target="_blank" style="text-decoration:solid;"><span v-html="item.filename"></span></a>
+												<el-button type="text" @click="download(item.id)"><span style="font-size: 18px" v-html="item.filename"></span></el-button>
 												<div class="c_abstract"><span v-html="item.content"></span></div>
 												<div class="sc_info">
 													<span v-html="item.author"></span>&nbsp;&nbsp;-&nbsp;&nbsp;
@@ -211,6 +211,9 @@
                     window.URL.revokeObjectURL(url); //释放掉blob对象
                     this.loading = false
 				})
+			},
+            download(id){
+                window.open("http://101.200.164.208:8080/download/" + id, "_blank")
 			}
 		}
 	}

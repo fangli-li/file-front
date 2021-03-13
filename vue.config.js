@@ -8,7 +8,7 @@ module.exports = {
     // process.env.NODE_ENV==='development' // (开发环境)
     // baseUrl: process.env.NODE_ENV==='production'?"https://cdn.didabisai.com/front/":'front/',
 
-    baseUrl: process.env.NODE_ENV==='production'?"http://testihospital.doctoradmin.ebaiyihui.com":'./',  //  用用程序默认部署位置，‘/’根目录，存放子目录ex：‘/web/’
+    publicPath: process.env.NODE_ENV==='production'?"http://101.200.164.208:8080":'./',  //  用用程序默认部署位置，‘/’根目录，存放子目录ex：‘/web/’
     outputDir: 'dist',  // 输出文件目录
     devServer: {
         proxy: {
