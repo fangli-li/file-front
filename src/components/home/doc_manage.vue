@@ -4,7 +4,7 @@
 			<el-row>
 				<el-col :span="6">
 					<el-form-item label="主题">
-						<el-select v-model="searchParams.topic" placeholder="主题">
+						<el-select v-model="searchParams.topic" placeholder="主题" clearable>
 							<el-option
 									v-for="item in topicList"
 									:key="item"
@@ -16,13 +16,13 @@
 				</el-col>
 				<el-col :span="6">
 					<el-form-item label="作者">
-						<el-input v-model="searchParams.author" placeholder="作者"></el-input>
+						<el-input v-model="searchParams.author" placeholder="作者" clearable></el-input>
 					</el-form-item>
 				</el-col>
 				<template v-if="toggleSearchStatus">
 					<el-col :span="6">
 						<el-form-item label="密级">
-							<el-select v-model="searchParams.level" placeholder="密级">
+							<el-select v-model="searchParams.level" placeholder="密级" clearable>
 								<el-option
 									v-for="item in levelList"
 									:key="item"
@@ -41,6 +41,7 @@
 				<el-col :span="6">
 					<el-form-item>
 						<el-button type="primary" @click="searchData">查询</el-button>
+						<el-button type="primary" @click="resetData">重置</el-button>
 						<el-button type="primary" @click="toggleSearchStatus = !toggleSearchStatus" style="margin-left: 8px">
 						{{ toggleSearchStatus ? '收起' : '展开' }}
 						<el-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
@@ -206,6 +207,10 @@
 		    this.searchData(1)
 		},
 		methods: {
+            resetData() {
+                this.searchParams = {}
+                this.searchData(1)
+			},
             searchData(arg) {
                 this.loading = true
                 if(arg === 1){
