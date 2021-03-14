@@ -5,6 +5,7 @@ import Home from '@/components/home/home'
 import SearchResult from '@/components/home/search_result'
 import MyPage from '@/components/home/mypage'
 import DocManage from '@/components/home/doc_manage'
+import DictManage from '@/components/home/dict_manage'
 
 Vue.use(Router)
 
@@ -34,5 +35,10 @@ export default new Router({
 			path: '/docmanage',
 			name: 'DocManage',
 			component: DocManage
+		},
+		{
+			path: '/dictmanage',
+			name: 'DictManage',
+			component: DictManage
 		}]
 })

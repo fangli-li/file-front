@@ -69,6 +69,7 @@
 							<el-dropdown-menu slot="dropdown">
 								<el-dropdown-item class="clearfix"><a @click="goMyPage">我的主页</a></el-dropdown-item>
 								<el-dropdown-item class="clearfix"><a @click="goDocManage">文档管理</a></el-dropdown-item>
+								<el-dropdown-item class="clearfix"><a @click="goDictManage">分词管理</a></el-dropdown-item>
 								<el-dropdown-item class="clearfix">退出</el-dropdown-item>
 							</el-dropdown-menu>
 						</el-dropdown>
@@ -112,6 +113,9 @@
 			},
             goHome(){
 			    this.$router.push({path: '/'})
+			},
+            goDictManage(){
+			    this.$router.push({name: 'DictManage'})
 			},
             doAdvanceSearch() {
                 this.$router.push({

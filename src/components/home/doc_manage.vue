@@ -1,5 +1,6 @@
 <template>
 	<div style="width: 1200px;height: auto;margin: 0 auto;max-width: 90%">
+		<h1>文献管理</h1>
 		<el-form class="searchForm" :inline="true" :model="searchParams" size="small" style="margin-top: 24px">
 			<el-row>
 				<el-col :xl="6" :ls="6" :md="6" :sm="12" :xs="24">
@@ -54,6 +55,7 @@
 		<div style="height: 30px;">
 			<div style="float: left;line-height: 30px;">
 				<el-button type="primary" icon="el-icon-circle-plus-outline" size="mini" @click="showAdd">新建</el-button>
+				<el-button type="primary" size="mini" @click="showFileAllImport">批量导入</el-button>
 			</div>
 		</div>
 
@@ -101,14 +103,17 @@
 		</div>
 
 		<doc-modal ref="docModal" @ok="searchData(1)"></doc-modal>
+		<file-import-modal ref="fileImportModal"></file-import-modal>
 	</div>
 </template>
 
 <script>
 	import docModal from './modules/docModal'
+	import fileImportModal from './modules/fileImportModal'
 	export default {
 	    components: {
             docModal,
+            fileImportModal
 		},
 		data() {
 			return {
@@ -136,6 +141,9 @@
 			},
             showEdit(row){
                 this.$refs.docModal.showEdit(row)
+			},
+            showFileAllImport(){
+                this.$refs.fileImportModal.show()
 			},
             resetData() {
                 this.searchParams = {}
