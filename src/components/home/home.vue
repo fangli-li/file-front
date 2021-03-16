@@ -80,9 +80,9 @@
 		<router-view :key="$route.fullPath"></router-view>
 		<el-dialog width="30%" title="管理员登录" :visible.sync="loginModalFlag">
 			<div>
-				<el-form label-width="80px" size="small">
+				<el-form label-width="60px" size="small" @submit.native.prevent>
 					<el-form-item label="密码">
-						<el-input v-model="password"></el-input>
+						<el-input v-model="password" @keyup.enter.native="login"></el-input>
 					</el-form-item>
 				</el-form>
 			</div>
