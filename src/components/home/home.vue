@@ -58,30 +58,44 @@
 									<el-button type="primary" native-type="submit" @click="search" style="background-color: #4F6EF2;">搜索</el-button>
 								</template>
 							</el-input>
-
 						</el-form>
 					</div>
 					<div style="width: 200px;float: right;">
-						<el-dropdown trigger="click" style="cursor: pointer">
-							<span class="el-dropdown-link el-icon-user-solid">
+						<el-dropdown trigger="click" style="cursor: pointer" v-if="loginFlag">
+							<span class="el-dropdown-link el-icon-user-solid" style="color: #ddd">
 								系统管理员<i class="el-icon-caret-bottom el-icon--right"></i>
 							</span>
 							<el-dropdown-menu slot="dropdown">
 								<el-dropdown-item class="clearfix"><a @click="goMyPage">我的主页</a></el-dropdown-item>
 								<el-dropdown-item class="clearfix"><a @click="goDocManage">文档管理</a></el-dropdown-item>
 								<el-dropdown-item class="clearfix"><a @click="goDictManage">分词管理</a></el-dropdown-item>
-								<el-dropdown-item class="clearfix">退出</el-dropdown-item>
+								<el-dropdown-item class="clearfix"><a @click="logout">退出</a></el-dropdown-item>
 							</el-dropdown-menu>
 						</el-dropdown>
+						<el-button v-else @click="loginModalFlag = true" type="text">管理员登录</el-button>
 					</div>
 				</div>
 			</div>
 		</el-header>
 		<router-view :key="$route.fullPath"></router-view>
+		<el-dialog width="30%" title="管理员登录" :visible.sync="loginModalFlag">
+			<div>
+				<el-form label-width="80px" size="small">
+					<el-form-item label="密码">
+						<el-input v-model="password"></el-input>
+					</el-form-item>
+				</el-form>
+			</div>
+			<span slot="footer" class="dialog-footer">
+				<el-button size="small" @click="loginModalFlag = false">取 消</el-button>
+				<el-button size="small" type="primary" @click="login">登录</el-button>
+			</span>
+		</el-dialog>
 	</el-container>
 </template>
 
 <script>
+	import Vue from 'vue'
 	export default {
 		data() {
 			return {
@@ -92,7 +106,15 @@
                     dept: '',
                     level: '',
                     date: ''
-				}
+				},
+				loginFlag: false,
+                loginModalFlag: false,
+                password: ''
+			}
+		},
+		created(){
+		    if(Vue.ls.get('Login_Flag')){
+				this.loginFlag = true
 			}
 		},
 		methods: {
@@ -129,7 +151,22 @@
                         date: this.searchForm.date
                     }
                 });
-            }
+            },
+            login(){
+			    if(this.password === 'admin'){
+			        this.$message.success('登陆成功')
+					this.loginFlag = true
+					Vue.ls.set('Login_Flag', true, 24 * 60 * 60 * 1000)
+					this.loginModalFlag = false
+				} else {
+			        this.$message.error('密码错误')
+				}
+			},
+            logout(){
+			    Vue.ls.remove('Login_Flag')
+                this.loginFlag = false
+                this.$message.success('登出成功')
+			}
 		}
 	}
 </script>
