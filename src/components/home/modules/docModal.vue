@@ -1,6 +1,6 @@
 <template>
     <el-dialog width="40%" :title="title" :visible.sync="dialogVisible" :before-close="addDiolagClose">
-        <div style="width: 500px;margin: 0 auto" v-loading="fileUploadLoading">
+        <div style="max-width: 500px;margin: 0 auto" v-loading="fileUploadLoading">
             <el-form ref="docForm" :model="docForm" label-width="80px" size="small" :rules="docFormRules">
                 <el-form-item label="标题" prop="title">
                     <el-input v-model="docForm.title" placeholder="标题"></el-input>

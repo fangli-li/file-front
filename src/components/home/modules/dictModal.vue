@@ -1,6 +1,6 @@
 <template>
     <el-dialog width="40%" :title="title" :visible.sync="dialogVisible" :before-close="addDiolagClose">
-        <div style="width: 500px;margin: 0 auto" v-loading="fileUploadLoading">
+        <div style="max-width:500px;margin: 0 auto" v-loading="fileUploadLoading">
             <el-form ref="dictForm" :model="dictForm" label-width="80px" size="small" :rules="dictFormRules">
                 <el-form-item label="类型" prop="type">
                     <el-select v-model="dictForm.type" placeholder="类型">
