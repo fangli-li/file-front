@@ -105,6 +105,7 @@
             showEdit(row){
                 this.title = '编辑'
                 this.docForm = {
+                    id: row.id,
                     title: row.title,
                     topic: row.topic,
                     level: row.level,
@@ -177,6 +178,24 @@
             },
             submitEditForm(){
                 console.log('编辑')
+                let that = this
+                this.$refs.docForm.validate((val) => {
+                    if (val) {
+                        this.fileUploadLoading = true
+                        let url = '/api/update?'
+                        for(let [key, value] of Object.entries(that.docForm)){
+                            console.log(key, value)
+                            url = url + key + '=' + value + '&'
+                        }
+                        this.$axios.put(url).then(res => {
+                            console.log(res)
+                            this.fileUploadLoading = false
+                            that.$message.success('修改成功')
+                            that.addDiolagClose()
+                            that.$emit('ok')
+                        })
+                    }
+                })
             },
             addPredictFile(file){
                 console.log(file)
