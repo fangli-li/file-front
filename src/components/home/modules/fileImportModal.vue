@@ -1,10 +1,10 @@
 <template>
-    <el-dialog width="40%" :visible.sync="dialogVisible" title="批量导入">
+    <el-dialog width="40%" :visible.sync="dialogVisible" title="批量导入" :before-close="fileImportModal">
         <div style="display: flex;align-items: center;justify-content: center">
             <el-upload
                     class="upload-demo"
                     drag
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    action="/api/uploadFile"
                     multiple>
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -28,6 +28,10 @@
         methods:{
             show(){
                 this.dialogVisible = true
+            },
+            fileImportModal(){
+                this.dialogVisible = false
+                this.$emit('ok')
             }
         }
     }

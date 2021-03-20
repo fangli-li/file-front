@@ -103,7 +103,7 @@
 		</div>
 
 		<doc-modal ref="docModal" @ok="searchData(1)"></doc-modal>
-		<file-import-modal ref="fileImportModal"></file-import-modal>
+		<file-import-modal ref="fileImportModal" @ok="searchData(1)"></file-import-modal>
 	</div>
 </template>
 

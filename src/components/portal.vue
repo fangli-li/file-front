@@ -32,7 +32,7 @@
 										<el-input v-model="searchForm.author" style="width:200px;"></el-input>
 									</el-form-item>
 									<el-form-item label="发文机关">
-										<el-select v-model="searchForm.topic" placeholder="请选择发文机关" style="width:200px;">
+										<el-select v-model="searchForm.department" placeholder="请选择发文机关" style="width:200px;">
 											<el-option label="一局" value="一局"></el-option>
 											<el-option label="二局" value="二局"></el-option>
 											<el-option label="三局" value="三局"></el-option>
@@ -51,7 +51,7 @@
 									</el-form-item>
 									<el-form-item>
 									    <el-button type="primary" @click="doAdvanceSearch">搜索</el-button>
-									  </el-form-item>
+									</el-form-item>
 								</el-form>
 			
 							</el-popover>
@@ -113,17 +113,17 @@
 				});
 			},
 			doAdvanceSearch() {
-				this.$router.push({
-					name: 'SearchResult',
-					params: {
-						keyword: this.searchForm.keyword,
-						topic: this.searchForm.topic,
-						author: this.searchForm.author,
-						dept: this.searchForm.dept,
-						level: this.searchForm.level,
-						date: this.searchForm.date
-					}
-				});
+                this.$router.push({
+                    path: '/searchresult',
+                    query: {
+                        keyword: this.searchForm.keyword,
+                        topic: this.searchForm.topic,
+                        author: this.searchForm.author,
+                        department: this.searchForm.department,
+                        level: this.searchForm.level,
+                        date: this.searchForm.date
+                    }
+                });
 			}
 		}
 	}

@@ -82,7 +82,14 @@
         },
 		data() {
 			return {
-				keyword: this.$route.query.keyword,
+                searchParams: {
+                    keyword: this.$route.query.keyword,
+                    author: this.$route.query.author,
+                    topic: this.$route.query.topic,
+                    department: this.$route.query.department,
+                    level: this.$route.query.level,
+                    date: this.$route.query.date
+                },
 				pageObj: {
 					total: 0,
 					pages: 1,
@@ -171,13 +178,13 @@
 				if(arg === 1){
                     this.pageObj.pages = 1
 				}
-				this.$axios.get('/api/search', {
-					params: {
-						keyword: this.keyword,
-						from: (this.pageObj.pages - 1) * this.pageObj.pageSize,
-						pageSize: this.pageObj.pageSize,
-						sort: this.sort.value
-					}
+				let params = Object.assign(this.searchParams, {
+                    from: (this.pageObj.pages - 1) * this.pageObj.pageSize,
+                    pageSize: this.pageObj.pageSize,
+                    sort: this.sort.value
+				})
+				this.$axios.get('/api/highSearch', {
+					params: params
 				}).then(response => {
 				    console.log(response)
 					let res = response.data; //获取请求到的数据中的data，即json的内容
