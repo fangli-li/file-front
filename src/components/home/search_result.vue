@@ -4,10 +4,23 @@
 			<el-container style="height:100%;text-align: left;width:1200px;margin:0 auto;">
 				<el-aside style="width:200px;">
 					<div style="min-height: 23px;"></div>
-					<el-tree
-						:data="treeData"
-						default-expand-all
-						:props="defaultProps"></el-tree>
+					<!--<el-tree-->
+						<!--:data="treeData"-->
+						<!--@node-click="nodeClick"-->
+						<!--default-expand-all-->
+						<!--:props="defaultProps"></el-tree>-->
+					<el-collapse v-model="activeNames" @change="handleChange" class="myCollapse">
+						<el-collapse-item v-for="(item, index) in collapseList" :title="item.label" :name="index">
+							<div style="display: flex;flex-direction: column;align-items: flex-start" v-if="item.value === ''">
+								<el-button style="width: 100%" v-for="child in item.children" type="text" @click="changeSearch(child, index)">{{child.label}}</el-button>
+							</div>
+							<div v-else>
+								<el-tag closable size="small"
+										style="width: 100%;display: flex;justify-content: space-between;align-items: center"
+										@close="cancelLeftSearch(index)">{{item.value.label}}</el-tag>
+							</div>
+						</el-collapse-item>
+					</el-collapse>
 				</el-aside>
 				<el-main id="search_result_layout" v-loading="loading">
 					<div v-if="pageObj.total == 0">
@@ -106,59 +119,80 @@
                     label: '按时间倒序',
                     value: 'time'
 				}],
-				treeData: [{
-						label: '年份',
-						children: [{
-								label: '2021年（20）'
-							},
-							{
-								label: '2020年（30）'
-							},
-							{
-								label: '2019年（40）'
-							},
-						]
-					},
-					{
-						label: '主题',
-						children: [{
-								label: '主题1（10）'
-							},
-							{
-								label: '主题2（32）'
-							},
-							{
-								label: '主题3（67）'
-							}
-						]
-					},
-					{
-						label: '发文机关',
-						children: [{
-								label: '发文机关1（12）'
-							},
-							{
-								label: '发文机关2（12）'
-							},
-							{
-								label: '发文机关3（12）'
-							},
-						]
-					},
-					{
-						label: '密级',
-						children: [{
-								label: '密级A（12）'
-							},
-							{
-								label: '密级AA（12）'
-							},
-							{
-								label: '密级AAA（12）'
-							}
-						]
-					}
-				],
+                activeNames: [0, 1, 2, 3],
+				collapseList: [{
+                    label: '年份',
+					value: '',
+                    children: [{
+							label: '2021年（20）',
+							value: 'date:2021'
+						},
+                        {
+                            label: '2020年（30）',
+                            value: 'date:2020'
+                        },
+                        {
+                            label: '2019年（40）',
+                            value: 'date:2019'
+                        },
+                    ]
+				}, {
+                    label: '主题',
+					value: '',
+                    children: [{
+							label: '政治',
+							value: 'topic:政治'
+						},
+                        {
+                            label: '经济',
+                            value: 'topic:经济'
+                        },
+                        {
+                            label: '文化',
+                            value: 'topic:文化'
+                        },
+                        {
+                            label: '军事',
+                            value: 'topic:军事'
+                        }
+                    ]
+				}, {
+                    label: '发文机关',
+					value: '',
+                    children: [{
+							label: '一局（12）',
+							value: 'department:一局'
+						},
+                        {
+                            label: '二局（12）',
+                            value: 'department:二局'
+                        },
+                        {
+                            label: '三局（12）',
+                            value: 'department:三局'
+                        },
+                    ]
+				}, {
+                    label: '密级',
+					value: '',
+                    children: [{
+							label: '公开',
+							value: 'level:公开'
+						},
+                        {
+                            label: '秘密',
+                            value: 'level:秘密'
+                        },
+                        {
+                            label: '机密',
+                            value: 'level:机密'
+                        },
+                        {
+                            label: '绝密',
+                            value: 'level:绝密'
+                        }
+                    ]
+				}],
 				defaultProps: {
 					children: 'children',
 					label: 'label'
@@ -232,12 +266,46 @@
 				} else {
 			        this.$refs.fileViewModal.showWord('/api/download/' + id, filename)
 				}
+			},
+            handleChange(){
+
+			},
+            changeSearch(item, index){
+			    console.log(item, index)
+                this.collapseList[index].value = item
+				let [key, value] = item.value.split(':')
+				this.searchParams[key] = value
+				this.searchData(1)
+			},
+            cancelLeftSearch(index){
+			    let item = this.collapseList[index].value
+                this.collapseList[index].value = ''
+                let [key, value] = item.value.split(':')
+                this.searchParams[key] = ''
+                this.searchData(1)
 			}
 		}
 	}
 </script>
 
-<style>
+<style lang="less">
+	.myCollapse{
+		.el-button{
+			margin: 0;
+			padding: 4px 0;
+			text-align: left;
+		}
+		.el-button:hover{
+			background-color: #f1f1f1;
+		}
+		.el-collapse-item__content{
+			padding-bottom: 4px;
+		}
+		.el-collapse-item__header{
+			height: 36px;
+			line-height: 36px;
+		}
+	}
 	.el-container {
 			height: 100%;
 		}
