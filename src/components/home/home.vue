@@ -112,7 +112,10 @@
 		},
 		methods: {
 			search() {
-			    console.log(this.searchForm.keyword)
+                if(this.searchForm.keyword === undefined || this.searchForm.keyword === ''){
+                    this.$message.warning('检索词不可为空，请输入内容后搜索')
+                    return;
+                }
 				this.$router.push({
 					path: '/searchresult',
                     query: {
@@ -133,6 +136,10 @@
 			    this.$router.push({name: 'DictManage'})
 			},
             doAdvanceSearch() {
+			    if(this.searchForm.keyword === undefined || this.searchForm.keyword === ''){
+			        this.$message.warning('检索词不可为空，请输入内容后搜索')
+			        return;
+				}
                 this.$router.push({
                     path: '/searchresult',
                     query: this.searchForm

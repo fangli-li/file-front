@@ -105,6 +105,10 @@
 		},
 		methods: {
 			search() {
+                if(this.searchForm.keyword === undefined || this.searchForm.keyword === ''){
+                    this.$message.warning('检索词不可为空，请输入内容后搜索')
+                    return;
+                }
 				this.$router.push({
                     path: '/searchresult',
 					query: {
@@ -113,6 +117,10 @@
 				});
 			},
 			doAdvanceSearch() {
+                if(this.searchForm.keyword === undefined || this.searchForm.keyword === ''){
+                    this.$message.warning('检索词不可为空，请输入内容后搜索')
+                    return;
+                }
                 this.$router.push({
                     path: '/searchresult',
                     query: {
