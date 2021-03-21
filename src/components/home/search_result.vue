@@ -299,7 +299,7 @@
 	.myCollapse{
 		.el-button{
 			margin: 0;
-			padding: 4px 0;
+			padding: 4px 0 4px 4px;
 			text-align: left;
 		}
 		.el-button:hover{
@@ -307,6 +307,17 @@
 		}
 		.button-active{
 			background-color: #f1f1f1;
+			position: relative;
+		}
+		.button-active:after{
+			width: 7px;
+			height: 18px;
+			line-height: 18px;
+			font-size: 8px;
+			position: absolute;
+			right: 4px;
+			top: 2px;
+			content: "x";
 		}
 		.el-collapse-item__content{
 			padding-bottom: 4px;
