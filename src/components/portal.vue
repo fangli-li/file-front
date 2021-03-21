@@ -18,10 +18,10 @@
 								</template>
 								<el-form label-position="right" label-width="120px" size="mini">
 									<el-form-item label="全部检索词">
-										<el-input v-model="searchForm.keyword" style="width:200px;"></el-input>
+										<el-input clearable v-model="searchForm.keyword" style="width:200px;"></el-input>
 									</el-form-item>
 									<el-form-item label="主题">
-										<el-select v-model="searchForm.topic" placeholder="请选择主题" style="width:200px;">
+										<el-select clearable v-model="searchForm.topic" placeholder="请选择主题" style="width:200px;">
 											<el-option label="政治" value="政治"></el-option>
 											<el-option label="经济" value="经济"></el-option>
 											<el-option label="文化" value="文化"></el-option>
@@ -29,17 +29,17 @@
 										</el-select>
 									</el-form-item>
 									<el-form-item label="作者">
-										<el-input v-model="searchForm.author" style="width:200px;"></el-input>
+										<el-input clearable v-model="searchForm.author" style="width:200px;"></el-input>
 									</el-form-item>
 									<el-form-item label="发文机关">
-										<el-select v-model="searchForm.department" placeholder="请选择发文机关" style="width:200px;">
+										<el-select clearable v-model="searchForm.department" placeholder="请选择发文机关" style="width:200px;">
 											<el-option label="一局" value="一局"></el-option>
 											<el-option label="二局" value="二局"></el-option>
 											<el-option label="三局" value="三局"></el-option>
 										</el-select>
 									</el-form-item>
 									<el-form-item label="密级">
-										<el-select v-model="searchForm.level" placeholder="请选择密级" style="width:200px;">
+										<el-select clearable v-model="searchForm.level" placeholder="请选择密级" style="width:200px;">
 											<el-option label="公开" value="公开"></el-option>
 											<el-option label="秘密" value="秘密"></el-option>
 											<el-option label="机密" value="机密"></el-option>
@@ -47,7 +47,7 @@
 										</el-select>
 									</el-form-item>
 									<el-form-item label="发文日期">
-										<el-input v-model="searchForm.date" placeholder="请输入年份" style="width:200px;"></el-input>
+										<el-input clearable v-model="searchForm.date" placeholder="请输入年份" style="width:200px;"></el-input>
 									</el-form-item>
 									<el-form-item>
 									    <el-button type="primary" @click="doAdvanceSearch">搜索</el-button>
