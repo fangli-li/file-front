@@ -60,7 +60,7 @@
                                 icon-color="red"
                                 title="确定要删除该分词吗？"
                                 confirm-button-type="danger"
-                                @confirm="deleteDict(scope.row.list)">
+                                @confirm="deleteDict(scope.row)">
                             <el-button slot="reference" type="text" size="small" style="color: red">删除</el-button>
                         </el-popconfirm>
                     </template>
@@ -140,7 +140,7 @@
                     }
                     if(that.searchParams.type){
                         that.resultList = that.resultList.filter((item) => {
-                            return item.type === that.searchParams
+                            return item.type === that.searchParams.type
                         })
                     }
                     if(that.searchParams.keyWord){
@@ -153,7 +153,7 @@
                     if(arg === 1){
                         that.tableData = that.resultList.slice(0, 10)
                     } else {
-                        that.tableData = that.resultList.slice((val - 1) * 10, val * 10)
+                        that.tableData = that.resultList.slice((that.pageObj.pages - 1) * 10, that.pageObj.pages * 10)
                     }
                     that.loading = false
                 })
@@ -162,7 +162,14 @@
                 this.pageObj.pages = val
                 this.tableData = this.resultList.slice((val - 1) * 10, val * 10)
             },
-            deleteDict(list){
+            deleteDict(row){
+                if(row.type === '近义词'){
+                    this.deleteSim(row.list)
+                } else {
+                    this.deleteNone(row.list)
+                }
+            },
+            deleteSim(list){
                 this.loading = true
                 this.$axios.delete('/api/synonym', {
                     data: {
@@ -172,6 +179,9 @@
                     this.$message.success('删除成功')
                     this.searchData()
                 })
+            },
+            deleteNone(list){
+
             }
         }
     }

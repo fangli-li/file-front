@@ -72,7 +72,17 @@
                     if(this.title === '新建')
                         this.simAdd()
                     else this.simEdit()
+                } else {
+                    if(this.title === '新建')
+                        this.noneAdd()
+                    else this.noneEdit()
                 }
+            },
+            noneAdd(){
+
+            },
+            noneEdit(){
+
             },
             submitEditForm(){
                 console.log('编辑')
