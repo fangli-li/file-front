@@ -39,7 +39,7 @@
                     type: '',
                     words: ''
                 },
-                typeList: ['近义词','不可分词'],
+                typeList: ['关联词','近义词','不可分词'],
                 loading: false,
                 dictFormRules: {
                     type: [{required: true, message: '请输入标题', trigger: 'blur'}]
@@ -72,17 +72,41 @@
                     if(this.title === '新建')
                         this.simAdd()
                     else this.simEdit()
-                } else {
+                } else if(this.dictForm.type === '关联词'){
                     if(this.title === '新建')
-                        this.noneAdd()
-                    else this.noneEdit()
+                        this.corAdd()
+                    else this.corEdit()
                 }
             },
-            noneAdd(){
-
+            corAdd(){
+                this.loading = true
+                this.$axios.post('/api/correlation', {
+                    correlation: this.dictForm.words.replace(/ /g, ',')
+                }).then(res => {
+                    console.log(res)
+                    this.loading = false
+                    this.$message.success('添加成功')
+                    this.$emit('ok')
+                    this.addDiolagClose()
+                })
             },
-            noneEdit(){
-
+            corEdit(){
+                if(this.oldSynonym === this.dictForm.words.replace(/ /g, ',')){
+                    this.$message.success('编辑成功')
+                    this.$emit('ok')
+                    this.addDiolagClose()
+                }
+                this.loading = true
+                this.$axios.put('/api/correlation', {
+                    oldCorrelation: this.oldSynonym,
+                    newCorrelation: this.dictForm.words.replace(/ /g, ','),
+                }).then(res => {
+                    console.log(res)
+                    this.loading = false
+                    this.$message.success('编辑成功')
+                    this.$emit('ok')
+                    this.addDiolagClose()
+                })
             },
             submitEditForm(){
                 console.log('编辑')

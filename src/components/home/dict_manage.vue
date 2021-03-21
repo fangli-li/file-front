@@ -99,8 +99,9 @@
                 searchParams: {},
                 toggleSearchStatus: false,
                 loading: false,
-                typeList: ['近义词','不可分词'],
+                typeList: ['关联词','近义词','不可分词'],
                 simList: [],
+                corList: [],
                 resultList: []
             }
         },
@@ -128,13 +129,26 @@
                         resolve()
                     });
                 })
-                let pList = [p1]
+                let p2 = new Promise((resolve, reject) => {
+                    this.$axios.get('/api/correlation').then(res => {
+                        console.log(res)
+                        that.corList = res.data.data
+                        resolve()
+                    });
+                })
+                let pList = [p1, p2]
                 Promise.all(pList).then(() => {
                     that.resultList = []
                     that.pageObj.pages = 1
                     for(const item of that.simList){
                         that.resultList.push({
                             type: '近义词',
+                            list: item
+                        })
+                    }
+                    for(const item of that.corList){
+                        that.resultList.push({
+                            type: '关联词',
                             list: item
                         })
                     }
@@ -165,6 +179,8 @@
             deleteDict(row){
                 if(row.type === '近义词'){
                     this.deleteSim(row.list)
+                } else if(row.type === '关联词') {
+                    this.deleteCor(row.list)
                 } else {
                     this.deleteNone(row.list)
                 }
@@ -182,6 +198,17 @@
             },
             deleteNone(list){
 
+            },
+            deleteCor(list){
+                this.loading = true
+                this.$axios.delete('/api/correlation', {
+                    data: {
+                        correlation: list
+                    }
+                }).then(res => {
+                    this.$message.success('删除成功')
+                    this.searchData()
+                })
             }
         }
     }
