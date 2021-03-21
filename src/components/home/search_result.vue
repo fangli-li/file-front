@@ -10,7 +10,7 @@
 						<!--default-expand-all-->
 						<!--:props="defaultProps"></el-tree>-->
 					<el-collapse v-model="activeNames" @change="handleChange" class="myCollapse">
-						<el-collapse-item v-for="(item, index) in collapseList" :title="item.label" :name="index">
+						<el-collapse-item v-for="(item, index) in argList" :title="item.label" :name="index">
 							<div style="display: flex;flex-direction: column;align-items: flex-start">
 								<el-button
 										style="width: 100%"
@@ -200,7 +200,8 @@
 				data: {
 					dataList: []
 				},
-				loading: true
+				loading: true,
+                argList: []
 			}
 		},
 		created() {
@@ -225,6 +226,35 @@
 					var total = res.total; //获取json中的data数组
 					this.pageObj.total = res.total;
 					this.data.dataList = res.data;
+					if(this.argList.length === 0){
+                        for(let key in res.agg){
+                            console.log(key)
+                            let obj = {
+                                children: []
+                            }
+                            switch (key){
+                                case 'department': {
+                                    obj.label = '发文机关';
+                                    break;
+                                }
+                                case 'level': {
+                                    obj.label = '密级'
+                                    break;
+                                }
+                                case 'topic': {
+                                    obj.label = '主题'
+                                    break;
+                                }
+                            }
+                            for(let sKey in res.agg[key]){
+                                obj.children.push({
+                                    label: sKey + '(' + res.agg[key][sKey] + ')',
+                                    value: key + ':' + sKey
+                                })
+                            }
+                            this.argList.push(obj)
+                        }
+					}
 					this.loading = false
 				});
 			},
@@ -271,11 +301,11 @@
 
 			},
             changeSearch(item, index, cIndex){
-				for(const [index, value] of this.collapseList[index].children.entries()){
+				for(const [index, value] of this.argList[index].children.entries()){
 			        value.active = index === cIndex ? !value.active : false
 				}
-                console.log(this.collapseList)
-                this.collapseList[index].value = item
+                console.log(this.argList)
+                this.argList[index].value = item
 				let [key, value] = item.value.split(':')
 				if(this.searchParams[key] === value){
                     this.searchParams[key] = ''
