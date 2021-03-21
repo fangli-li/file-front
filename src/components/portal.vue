@@ -106,8 +106,8 @@
 		methods: {
 			search() {
 				this.$router.push({
-					name: 'SearchResult',
-					params: {
+                    path: '/searchresult',
+					query: {
 						keyword: this.searchForm.keyword
 					}
 				});

@@ -13,15 +13,9 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item
-                        v-for="(item, index) in dictForm.keyWordList"
-                        :label="'关键词' + (index + 1)"
-                        :key="item.key"
+                        label="关键词"
                         :rules="{required: true, message: '关键词不能为空', trigger: 'blur'}">
-                    <el-input style="width: calc(100% - 70px)" v-model="item.value"></el-input>
-                    <el-button @click.prevent="removeKeyWord(item)" size="small" style="margin-left: 8px">删除</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="addKeyWord">新增关键词</el-button>
+                    <el-input type="textarea" v-model="dictForm.words"></el-input>
                 </el-form-item>
             </el-form>
         </div>
@@ -43,16 +37,12 @@
                 dialogVisible: false,
                 dictForm: {
                     type: '',
-                    keyWordList:[{
-                        key:'0',
-                        value: ''
-                    }]
+                    words: ''
                 },
                 typeList: ['关联词','近义词','不可分词'],
                 fileUploadLoading: false,
                 dictFormRules: {
-                    type: [{required: true, message: '请输入标题', trigger: 'blur'}],
-                    date: [{required: true, message: '请选择日期', trigger: 'blur'}]
+                    type: [{required: true, message: '请输入标题', trigger: 'blur'}]
                 }
             }
         },
@@ -62,17 +52,14 @@
                 this.dialogVisible = true
                 this.dictForm = {
                     type: '',
-                    keyWordList:[{
-                        key:'0',
-                        value: ''
-                    }]
+                    words: ''
                 }
             },
             showEdit(row){
                 this.title = '编辑'
                 this.dictForm = {
                     type: row.type,
-                    keyWordList: row.keyWordList
+                    words: row.words
                 }
                 this.dialogVisible = true
             },

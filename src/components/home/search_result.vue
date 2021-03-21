@@ -11,13 +11,13 @@
 						<!--:props="defaultProps"></el-tree>-->
 					<el-collapse v-model="activeNames" @change="handleChange" class="myCollapse">
 						<el-collapse-item v-for="(item, index) in collapseList" :title="item.label" :name="index">
-							<div style="display: flex;flex-direction: column;align-items: flex-start" v-if="item.value === ''">
-								<el-button style="width: 100%" v-for="child in item.children" type="text" @click="changeSearch(child, index)">{{child.label}}</el-button>
-							</div>
-							<div v-else>
-								<el-tag closable size="small"
-										style="width: 100%;display: flex;justify-content: space-between;align-items: center"
-										@close="cancelLeftSearch(index)">{{item.value.label}}</el-tag>
+							<div style="display: flex;flex-direction: column;align-items: flex-start">
+								<el-button
+										style="width: 100%"
+										v-for="(child, cIndex) in item.children"
+										:class="child.active ? 'button-active' : ''"
+										type="text"
+										@click="changeSearch(child, index, cIndex)">{{child.label}}</el-button>
 							</div>
 						</el-collapse-item>
 					</el-collapse>
@@ -270,20 +270,27 @@
             handleChange(){
 
 			},
-            changeSearch(item, index){
-			    console.log(item, index)
+            changeSearch(item, index, cIndex){
+				for(const [index, value] of this.collapseList[index].children.entries()){
+			        value.active = index === cIndex ? !value.active : false
+				}
+                console.log(this.collapseList)
                 this.collapseList[index].value = item
 				let [key, value] = item.value.split(':')
-				this.searchParams[key] = value
+				if(this.searchParams[key] === value){
+                    this.searchParams[key] = ''
+				} else {
+                    this.searchParams[key] = value
+				}
 				this.searchData(1)
 			},
-            cancelLeftSearch(index){
-			    let item = this.collapseList[index].value
-                this.collapseList[index].value = ''
-                let [key, value] = item.value.split(':')
-                this.searchParams[key] = ''
-                this.searchData(1)
-			}
+            // cancelLeftSearch(index){
+			//     let item = this.collapseList[index].value
+             //    this.collapseList[index].value = ''
+             //    let [key, value] = item.value.split(':')
+             //    this.searchParams[key] = ''
+             //    this.searchData(1)
+			// }
 		}
 	}
 </script>
@@ -296,6 +303,9 @@
 			text-align: left;
 		}
 		.el-button:hover{
+			background-color: #f8f8f8;
+		}
+		.button-active{
 			background-color: #f1f1f1;
 		}
 		.el-collapse-item__content{

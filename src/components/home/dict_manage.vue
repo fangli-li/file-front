@@ -118,7 +118,7 @@
             }
         },
         mounted(){
-            // this.searchData(1)
+            this.searchData(1)
         },
         methods: {
             showAdd(){
@@ -140,15 +140,11 @@
                     from: (this.pageObj.pages - 1) * this.pageObj.pageSize,
                     pageSize: this.pageObj.pageSize
                 })
-                this.$axios.get('/api/list', {
+                this.$axios.get('/api/synonym', {
                     params: params
                 }).then(response => {
                     console.log(response)
-                    let res = response.data; //获取请求到的数据中的data，即json的内容
-                    var total = res.total; //获取json中的data数组
-                    this.pageObj.total = res.total;
-                    this.tableData = res.data;
-                    this.loading = false
+
                 });
             },
             currentChange(val){
