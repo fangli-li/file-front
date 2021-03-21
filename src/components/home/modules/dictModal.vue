@@ -1,6 +1,6 @@
 <template>
     <el-dialog width="40%" :title="title" :visible.sync="dialogVisible" :before-close="addDiolagClose">
-        <div style="max-width:500px;margin: 0 auto" v-loading="fileUploadLoading">
+        <div style="max-width:500px;margin: 0 auto" v-loading="loading">
             <el-form ref="dictForm" :model="dictForm" label-width="80px" size="small" :rules="dictFormRules">
                 <el-form-item label="类型" prop="type">
                     <el-select v-model="dictForm.type" placeholder="类型">
@@ -15,7 +15,7 @@
                 <el-form-item
                         label="关键词"
                         :rules="{required: true, message: '关键词不能为空', trigger: 'blur'}">
-                    <el-input type="textarea" v-model="dictForm.words"></el-input>
+                    <el-input type="textarea" :rows="3" v-model="dictForm.words"></el-input>
                 </el-form-item>
             </el-form>
         </div>
@@ -39,8 +39,8 @@
                     type: '',
                     words: ''
                 },
-                typeList: ['关联词','近义词','不可分词'],
-                fileUploadLoading: false,
+                typeList: ['近义词','不可分词'],
+                loading: false,
                 dictFormRules: {
                     type: [{required: true, message: '请输入标题', trigger: 'blur'}]
                 }
@@ -59,33 +59,53 @@
                 this.title = '编辑'
                 this.dictForm = {
                     type: row.type,
-                    words: row.words
+                    words: row.list.replace(/,/g, ' ')
                 }
+                this.oldSynonym = row.list
                 this.dialogVisible = true
             },
             addDiolagClose(){
                 this.dialogVisible = false
             },
             submitForm(){
-                if(this.title === '新建')
-                    this.submitAddForm()
-                else
-                    this.submitEditForm()
+                if(this.dictForm.type === '近义词'){
+                    if(this.title === '新建')
+                        this.simAdd()
+                    else this.simEdit()
+                }
             },
             submitEditForm(){
                 console.log('编辑')
             },
-            addKeyWord(){
-                this.dictForm.keyWordList.push({
-                    value: '',
-                    key: (new Date()).valueOf()
+            simAdd(){
+                this.loading = true
+                this.$axios.post('/api/synonym', {
+                    synonym: this.dictForm.words.replace(/ /g, ',')
+                }).then(res => {
+                    console.log(res)
+                    this.loading = false
+                    this.$message.success('添加成功')
+                    this.$emit('ok')
+                    this.addDiolagClose()
                 })
             },
-            removeKeyWord(item){
-                var index = this.dictForm.keyWordList.indexOf(item)
-                if (index !== -1) {
-                    this.dictForm.keyWordList.splice(index, 1)
+            simEdit(){
+                if(this.oldSynonym === this.dictForm.words.replace(/ /g, ',')){
+                    this.$message.success('编辑成功')
+                    this.$emit('ok')
+                    this.addDiolagClose()
                 }
+                this.loading = true
+                this.$axios.put('/api/synonym', {
+                    oldSynonym: this.oldSynonym,
+                    newSynonym: this.dictForm.words.replace(/ /g, ','),
+                }).then(res => {
+                    console.log(res)
+                    this.loading = false
+                    this.$message.success('编辑成功')
+                    this.$emit('ok')
+                    this.addDiolagClose()
+                })
             }
         }
     }

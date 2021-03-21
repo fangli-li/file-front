@@ -46,9 +46,9 @@
                         <span>{{(pageObj.pages - 1) * pageObj.pageSize + scope.$index + 1}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="filename" label="关键词列表" align="center">
+                <el-table-column label="关键词列表" align="center">
                     <template slot-scope="scope">
-                        <el-tag v-for="item in scope.row.keyWordList">{{item.value}}</el-tag>
+                        <el-tag v-for="item in scope.row.list.split(',')">{{item}}</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column prop="type" label="类型" width="100"></el-table-column>
@@ -60,7 +60,7 @@
                                 icon-color="red"
                                 title="确定要删除该分词吗？"
                                 confirm-button-type="danger"
-                                @confirm="deleteDict(scope.row.id)">
+                                @confirm="deleteDict(scope.row.list)">
                             <el-button slot="reference" type="text" size="small" style="color: red">删除</el-button>
                         </el-popconfirm>
                     </template>
@@ -90,22 +90,7 @@
         data() {
             return {
                 searchWord: '',
-                tableData: [{
-                    type: '近义词',
-                    keyWordList: [{
-                        key: '1',
-                        value: '飞机'
-                    },{
-                        key: '2',
-                        value: '飞行器'
-                    },{
-                        key: '3',
-                        value: '战斗机'
-                    },{
-                        key: '4',
-                        value: 'f15战斗机'
-                    }]
-                }],
+                tableData: [],
                 pageObj: {
                     total: 0,
                     pages: 1,
@@ -114,7 +99,9 @@
                 searchParams: {},
                 toggleSearchStatus: false,
                 loading: false,
-                typeList: ['关联词','近义词','不可分词'],
+                typeList: ['近义词','不可分词'],
+                simList: [],
+                resultList: []
             }
         },
         mounted(){
@@ -133,27 +120,55 @@
             },
             searchData(arg) {
                 this.loading = true
-                if(arg === 1){
-                    this.pageObj.pages = 1
-                }
-                let params = Object.assign(this.searchParams, {
-                    from: (this.pageObj.pages - 1) * this.pageObj.pageSize,
-                    pageSize: this.pageObj.pageSize
+                let that = this
+                let p1 = new Promise((resolve, reject) => {
+                    this.$axios.get('/api/synonym').then(res => {
+                        console.log(res)
+                        that.simList = res.data.data
+                        resolve()
+                    });
                 })
-                this.$axios.get('/api/synonym', {
-                    params: params
-                }).then(response => {
-                    console.log(response)
-
-                });
+                let pList = [p1]
+                Promise.all(pList).then(() => {
+                    that.resultList = []
+                    that.pageObj.pages = 1
+                    for(const item of that.simList){
+                        that.resultList.push({
+                            type: '近义词',
+                            list: item
+                        })
+                    }
+                    if(that.searchParams.type){
+                        that.resultList = that.resultList.filter((item) => {
+                            return item.type === that.searchParams
+                        })
+                    }
+                    if(that.searchParams.keyWord){
+                        that.resultList = that.resultList.filter((item) => {
+                            console.log(item.list.indexOf(that.searchParams.keyWord) > -1)
+                            return item.list.indexOf(that.searchParams.keyWord) > -1
+                        })
+                    }
+                    that.pageObj.total = that.resultList.length
+                    if(arg === 1){
+                        that.tableData = that.resultList.slice(0, 10)
+                    } else {
+                        that.tableData = that.resultList.slice((val - 1) * 10, val * 10)
+                    }
+                    that.loading = false
+                })
             },
             currentChange(val){
                 this.pageObj.pages = val
-                this.searchData()
+                this.tableData = this.resultList.slice((val - 1) * 10, val * 10)
             },
-            deleteDict(id){
+            deleteDict(list){
                 this.loading = true
-                this.$axios.delete('/api/delete/' + id).then(res => {
+                this.$axios.delete('/api/synonym', {
+                    data: {
+                        synonym: list
+                    }
+                }).then(res => {
                     this.$message.success('删除成功')
                     this.searchData()
                 })
