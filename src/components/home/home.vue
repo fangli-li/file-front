@@ -105,6 +105,16 @@
                 password: ''
 			}
 		},
+		watch: {
+		    $route: function (newRoute) {
+                console.log(newRoute)
+				if(newRoute.fullPath.indexOf('keyword') !== -1){
+                    this.searchForm.keyword = newRoute.query.keyword
+				} else {
+                    this.searchForm.keyword = ''
+				}
+            }
+		},
 		created(){
 		    if(Vue.ls.get('Login_Flag')){
 				this.loginFlag = true

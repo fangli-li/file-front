@@ -246,12 +246,22 @@
                                     break;
                                 }
                             }
+                            let undi = {}
                             for(let sKey in res.agg[key]){
+                                if(sKey === 'undifed'){
+                                    undi = {
+                                        label: '其他' + '(' + res.agg[key][sKey] + ')',
+                                        value: key + ':' + sKey
+                                    }
+								}
+								else
                                 obj.children.push({
                                     label: sKey + '(' + res.agg[key][sKey] + ')',
                                     value: key + ':' + sKey
                                 })
                             }
+                            if(undi !== {})
+                            	obj.children.push(undi)
                             this.argList.push(obj)
                         }
 					}
