@@ -119,6 +119,10 @@
 		    if(Vue.ls.get('Login_Flag')){
 				this.loginFlag = true
 			}
+			let route = this.$route
+			if(route.fullPath.indexOf('keyword') !== -1){
+                this.searchForm.keyword = route.query.keyword
+            }
 		},
 		methods: {
 			search() {
