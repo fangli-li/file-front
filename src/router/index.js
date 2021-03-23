@@ -18,27 +18,35 @@ export default new Router({
 	mode: 'history',
 	routes: [{
 			path: '/',
-			name: 'Home',
+			name: 'Portal',
 			component: Portal
 		},
 		{
-			path: '/searchresult',
-			name: 'SearchResult',
-			component: SearchResult
-		},
-		{
-			path: '/mypage',
-			name: 'MyPage',
-			component: MyPage
-		},
-		{
-			path: '/docmanage',
-			name: 'DocManage',
-			component: DocManage
-		},
-		{
-			path: '/dictmanage',
-			name: 'DictManage',
-			component: DictManage
-		}]
+			path: '/basic',
+			name: 'Home',
+			component: Home,
+			children: [
+                {
+                    path: '/searchresult',
+                    name: 'SearchResult',
+                    component: SearchResult
+                },
+                {
+                    path: '/mypage',
+                    name: 'MyPage',
+                    component: MyPage
+                },
+                {
+                    path: '/docmanage',
+                    name: 'DocManage',
+                    component: DocManage
+                },
+                {
+                    path: '/dictmanage',
+                    name: 'DictManage',
+                    component: DictManage
+                }
+			]
+		}
+		]
 })

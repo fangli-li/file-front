@@ -1,17 +1,19 @@
 <template>
 	<div id="app">
-		<home />
+		<!--<home />-->
+		<!--<portal></portal>-->
+		<router-view></router-view>
 	</div>
 </template>
 
 <script>
-	//import portal from './components/portal.vue'
-	import home from './components/home/home.vue'
+	import portal from './components/portal.vue'
+	// import home from './components/home/home.vue'
 
 	export default {
 		name: 'app',
 		components: {
-			home
+            portal
 		}
 	}
 </script>
