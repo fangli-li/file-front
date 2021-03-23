@@ -6,7 +6,7 @@
 					<div style="width: 80px;float: left;cursor: pointer" @click="goHome">
 						<img src="../../assets/logo.png" style="height: 60px">
 					</div>
-					<div style="width: 600px;float: left;">
+					<div style="width: 600px;float: left;" v-show="!isHomepage">
 						<el-form ref="form" :model="searchForm" class="search_form" @submit.native.prevent>
 							<el-input v-model="searchForm.keyword" style="width:450px;">
 								<template #prepend>
@@ -102,7 +102,8 @@
 				searchForm: {},
 				loginFlag: false,
                 loginModalFlag: false,
-                password: ''
+                password: '',
+                isHomepage: false
 			}
 		},
 		watch: {
@@ -113,6 +114,11 @@
 				} else {
                     this.searchForm.keyword = ''
 				}
+				if(newRoute.fullPath === '/'){
+                    this.isHomepage = true
+				} else {
+                    this.isHomepage = false
+				}
             }
 		},
 		created(){
@@ -122,6 +128,11 @@
 			let route = this.$route
 			if(route.fullPath.indexOf('keyword') !== -1){
                 this.searchForm.keyword = route.query.keyword
+            }
+            if(route.fullPath === '/'){
+                this.isHomepage = true
+            } else {
+                this.isHomepage = false
             }
 		},
 		methods: {

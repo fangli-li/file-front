@@ -16,16 +16,17 @@ Router.prototype.push = function push(location) {
 
 export default new Router({
 	mode: 'history',
-	routes: [{
-			path: '/',
-			name: 'Portal',
-			component: Portal
-		},
+	routes: [
 		{
-			path: '/basic',
+			path: '/',
 			name: 'Home',
 			component: Home,
 			children: [
+                {
+                    path: '/',
+                    name: 'Portal',
+                    component: Portal
+                },
                 {
                     path: '/searchresult',
                     name: 'SearchResult',
