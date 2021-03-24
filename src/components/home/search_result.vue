@@ -302,7 +302,7 @@
 			},
             download(id, filename){
 			    if(filename.indexOf('pdf') > -1){
-                    window.open("http://101.200.164.208:8080/download/" + id, "_blank")
+                    window.open("/api/download/" + id, "_blank")
 				} else {
 			        this.$refs.fileViewModal.showWord('/api/download/' + id, filename)
 				}
