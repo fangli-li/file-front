@@ -4,10 +4,10 @@
 		<el-form class="searchForm" :inline="true" :model="searchParams" size="small" style="margin-top: 24px">
 			<el-row>
 				<el-col :xl="6" :ls="6" :md="6" :sm="12" :xs="24">
-					<el-form-item label="主题">
-						<el-select v-model="searchParams.topic" placeholder="主题" clearable>
+					<el-form-item label="文件类型">
+						<el-select v-model="searchParams.type" placeholder="文件类型" clearable>
 							<el-option
-									v-for="item in topicList"
+									v-for="item in typeList"
 									:key="item"
 									:label="item"
 									:value="item">
@@ -54,7 +54,7 @@
 		</el-form>
 		<div style="height: 30px;">
 			<div style="float: left;line-height: 30px;">
-				<el-button type="primary" icon="el-icon-circle-plus-outline" size="mini" @click="showAdd">新建</el-button>
+				<!--<el-button type="primary" icon="el-icon-circle-plus-outline" size="mini" @click="showAdd">新建</el-button>-->
 				<el-button type="primary" size="mini" @click="showFileAllImport">批量导入</el-button>
 			</div>
 		</div>
@@ -72,10 +72,11 @@
 				</el-table-column>
 				<el-table-column prop="title" label="标题"></el-table-column>
 				<!--<el-table-column prop="filename" label="文件名称"></el-table-column>-->
-				<el-table-column prop="topic" label="主题" width="80"></el-table-column>
+				<el-table-column prop="type" label="文件类型" width="80"></el-table-column>
 				<el-table-column prop="author" label="作者" width="100"></el-table-column>
 				<el-table-column prop="department" label="发文机关" width="100"></el-table-column>
 				<el-table-column prop="level" label="密级" width="80"></el-table-column>
+				<el-table-column prop="number" label="发文编号" width="80"></el-table-column>
 				<el-table-column prop="date" label="发文日期" width="100"></el-table-column>
 				<el-table-column prop="oper" label="操作" width="180">
 					<template slot-scope="scope">
@@ -128,7 +129,7 @@
                 toggleSearchStatus: false,
                 loading: false,
                 levelList: ['公开', '秘密', '机密', '绝密'],
-				topicList: ['政治','经济','文化','军事'],
+                typeList: ['命令','通知','宣传稿'],
 				unitList: ['一局', '二局', '三局'],
 			}
 		},
@@ -196,8 +197,10 @@
             deleteFile(id){
                 this.loading = true
                 this.$axios.delete('/api/delete/' + id).then(res => {
-				    this.$message.success('删除成功')
-				    this.searchData()
+                    setTimeout(() => {
+                        this.$message.success('删除成功')
+                        this.searchData()
+					}, 500)
 				})
 			}
 		}

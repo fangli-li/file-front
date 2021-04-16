@@ -5,15 +5,21 @@
                 <el-form-item label="标题" prop="title">
                     <el-input v-model="docForm.title" placeholder="标题"></el-input>
                 </el-form-item>
-                <el-form-item label="主题" prop="topic">
-                    <el-select v-model="docForm.topic" placeholder="主题">
+                <el-form-item label="文件类型" prop="type">
+                    <el-select v-model="docForm.type" placeholder="文件类型">
                         <el-option
-                                v-for="item in topicList"
+                                v-for="item in typeList"
                                 :key="item"
                                 :label="item"
                                 :value="item">
                         </el-option>
                     </el-select>
+                </el-form-item>
+                <!--<el-form-item label="作者" prop="author">-->
+                    <!--<el-input v-model="docForm.author" placeholder="作者"></el-input>-->
+                <!--</el-form-item>-->
+                <el-form-item label="发文编号" prop="number">
+                    <el-input v-model="docForm.number" placeholder="发文编号"></el-input>
                 </el-form-item>
                 <el-form-item label="发文机关" prop="department">
                     <el-select v-model="docForm.department" placeholder="发文机关">
@@ -78,22 +84,26 @@
                 dialogVisible: false,
                 docForm: {
                     title: '',
-                    topic: '',
+                    type: '',
                     level: '',
                     department: '',
-                    date: ''
+                    date: '',
+                    author: '',
+                    number: ''
                 },
                 fileList: [],
                 levelList: ['公开', '秘密', '机密', '绝密'],
-                topicList: ['政治','经济','文化','军事'],
+                typeList: ['命令','通知','宣传稿'],
                 unitList: ['一局', '二局', '三局'],
                 fileUploadLoading: false,
                 docFormRules: {
                     title: [{required: true, message: '请输入标题', trigger: 'blur'}],
-                    topic: [{required: true, message: '请选择主题', trigger: 'blur'}],
+                    type: [{required: true, message: '请选择文件类型', trigger: 'blur'}],
                     level: [{required: true, message: '请选择密级', trigger: 'blur'}],
                     department: [{required: true, message: '请选择发文机关', trigger: 'blur'}],
-                    date: [{required: true, message: '请选择日期', trigger: 'blur'}]
+                    date: [{required: true, message: '请选择日期', trigger: 'blur'}],
+                    number: [{required: true, message: '请输入发文编号', trigger: 'blur'}],
+                    author: [{required: true, message: '请输入作者', trigger: 'blur'}]
                 }
             }
         },
@@ -107,10 +117,12 @@
                 this.docForm = {
                     id: row.id,
                     title: row.title,
-                    topic: row.topic,
+                    type: row.type,
                     level: row.level,
                     department: row.department,
-                    date: Moment(row.date).unix() * 1000
+                    date: Moment(row.date).unix() * 1000,
+                    number: row.number,
+                    author: row.author
                 }
                 this.dialogVisible = true
             },

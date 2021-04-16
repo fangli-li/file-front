@@ -20,12 +20,11 @@
 									<el-form-item label="全部检索词">
 										<el-input clearable v-model="searchForm.keyword" style="width:200px;"></el-input>
 									</el-form-item>
-									<el-form-item label="主题">
-										<el-select clearable v-model="searchForm.topic" placeholder="请选择主题" style="width:200px;">
-											<el-option label="政治" value="政治"></el-option>
-											<el-option label="经济" value="经济"></el-option>
-											<el-option label="文化" value="文化"></el-option>
-											<el-option label="军事" value="军事"></el-option>
+									<el-form-item label="文件类型">
+										<el-select clearable v-model="searchForm.type" placeholder="请选择文件类型" style="width:200px;">
+											<el-option label="命令" value="命令"></el-option>
+											<el-option label="通知" value="通知"></el-option>
+											<el-option label="宣传稿" value="宣传稿"></el-option>
 										</el-select>
 									</el-form-item>
 									<el-form-item label="作者">
@@ -125,7 +124,7 @@
                     path: '/searchresult',
                     query: {
                         keyword: this.searchForm.keyword,
-                        topic: this.searchForm.topic,
+                        type: this.searchForm.type,
                         author: this.searchForm.author,
                         department: this.searchForm.department,
                         level: this.searchForm.level,

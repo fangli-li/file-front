@@ -53,7 +53,8 @@
                                                     <span v-html="item.filename"></span><br>
 													<span v-html="item.author"></span>&nbsp;&nbsp;-&nbsp;&nbsp;
 													<!--《<span v-html="item.filename"></span>》<br>-->
-													<span v-html="item.topic"></span>&nbsp;&nbsp;-&nbsp;&nbsp;
+													<span v-html="item.type"></span>&nbsp;&nbsp;-&nbsp;&nbsp;
+													<span v-html="item.department"></span>&nbsp;&nbsp;-&nbsp;&nbsp;
 													<span v-html="item.level"></span>&nbsp;&nbsp;-&nbsp;&nbsp;
 													<span v-html="item.date"></span>
 												</div>
@@ -98,7 +99,7 @@
                 searchParams: {
                     keyword: this.$route.query.keyword,
                     author: this.$route.query.author,
-                    topic: this.$route.query.topic,
+                    type: this.$route.query.type,
                     department: this.$route.query.department,
                     level: this.$route.query.level,
                     date: this.$route.query.date
@@ -119,80 +120,8 @@
                     label: '按时间倒序',
                     value: 'time'
 				}],
-                activeNames: [0, 1, 2, 3],
-				collapseList: [{
-                    label: '年份',
-					value: '',
-                    children: [{
-							label: '2021年（20）',
-							value: 'date:2021'
-						},
-                        {
-                            label: '2020年（30）',
-                            value: 'date:2020'
-                        },
-                        {
-                            label: '2019年（40）',
-                            value: 'date:2019'
-                        },
-                    ]
-				}, {
-                    label: '主题',
-					value: '',
-                    children: [{
-							label: '政治',
-							value: 'topic:政治'
-						},
-                        {
-                            label: '经济',
-                            value: 'topic:经济'
-                        },
-                        {
-                            label: '文化',
-                            value: 'topic:文化'
-                        },
-                        {
-                            label: '军事',
-                            value: 'topic:军事'
-                        }
-                    ]
-				}, {
-                    label: '发文机关',
-					value: '',
-                    children: [{
-							label: '一局（12）',
-							value: 'department:一局'
-						},
-                        {
-                            label: '二局（12）',
-                            value: 'department:二局'
-                        },
-                        {
-                            label: '三局（12）',
-                            value: 'department:三局'
-                        },
-                    ]
-				}, {
-                    label: '密级',
-					value: '',
-                    children: [{
-							label: '公开',
-							value: 'level:公开'
-						},
-                        {
-                            label: '秘密',
-                            value: 'level:秘密'
-                        },
-                        {
-                            label: '机密',
-                            value: 'level:机密'
-                        },
-                        {
-                            label: '绝密',
-                            value: 'level:绝密'
-                        }
-                    ]
-				}],
+                activeNames: [0, 1, 2, 3, 4],
+				collapseList: [],
 				defaultProps: {
 					children: 'children',
 					label: 'label'
@@ -245,10 +174,18 @@
                                     obj.label = '主题'
                                     break;
                                 }
+								case 'year': {
+                                    obj.label = '年份'
+                                    break;
+								}
+								case 'type': {
+                                    obj.label = '文件类型'
+                                    break;
+								}
                             }
                             let undi = {}
                             for(let sKey in res.agg[key]){
-                                if(sKey === 'undifed'){
+                                if(sKey === 'undifed' || sKey === 'undefined'){
                                     undi = {
                                         label: '其他' + '(' + res.agg[key][sKey] + ')',
                                         value: key + ':' + sKey

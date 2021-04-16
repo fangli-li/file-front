@@ -4,6 +4,7 @@
             <el-upload
                     class="upload-demo"
                     drag
+                    :file-list="fileList"
                     action="/api/uploadFile"
                     multiple>
                 <i class="el-icon-upload"></i>
@@ -12,7 +13,7 @@
             </el-upload>
         </div>
         <span slot="footer" class="dialog-footer">
-            <el-button size="small" @click="dialogVisible = false">关闭</el-button>
+            <el-button size="small" @click="fileImportModal">关闭</el-button>
         </span>
     </el-dialog>
 </template>
@@ -22,11 +23,13 @@
         name: "fileImportModal",
         data(){
             return{
-                dialogVisible: false
+                dialogVisible: false,
+                fileList: []
             }
         },
         methods:{
             show(){
+                this.fileList = []
                 this.dialogVisible = true
             },
             fileImportModal(){
