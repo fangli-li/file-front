@@ -15,9 +15,9 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <!--<el-form-item label="作者" prop="author">-->
-                    <!--<el-input v-model="docForm.author" placeholder="作者"></el-input>-->
-                <!--</el-form-item>-->
+                <el-form-item label="作者" prop="author">
+                    <el-input v-model="docForm.author" placeholder="作者"></el-input>
+                </el-form-item>
                 <el-form-item label="发文编号" prop="number">
                     <el-input v-model="docForm.number" placeholder="发文编号"></el-input>
                 </el-form-item>
